@@ -66,14 +66,10 @@ def after(date: str) -> str:
 
 def usage():
     """
-    Print a usage message to the user and exit.
+    Prints usage instructions and exits.
     """
-    message = "Usage: python3 assignment1.py <start_date> <stop_date>"
-    print(message)  # Write to stdout
-    sys.stderr.write(message + "\n")  # Also write to stderr
-    sys.stdout.flush()
-    sys.stderr.flush()
-    sys.exit(1)  # Exit with a non-zero status
+    print("Usage: assignment1.py YYYY-MM-DD YYYY-MM-DD")
+    sys.exit(1)
 
 
 def leap_year(year: int) -> bool:
@@ -149,13 +145,27 @@ def day_count(start_date: str, stop_date: str) -> int:
         current_date = after(current_date)  # Move to the next date
     return count
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     import sys
 
-    # Debug message for argument count
-    print(f"Debug: Number of arguments provided = {len(sys.argv)}", file=sys.stderr)
-
-    # Check argument count
+    # Check if the correct number of arguments is provided
     if len(sys.argv) != 3:
-        print("Debug: Incorrect number of arguments, calling usage()", file=sys.stderr)
-        usage()  # Call usage() and exit
+        usage()
+
+    # Parse arguments
+    start_date, stop_date = sys.argv[1], sys.argv[2]
+
+    # Validate the input dates
+    if not valid_date(start_date) or not valid_date(stop_date):
+        usage()
+
+    # Ensure start_date is earlier than stop_date
+    if start_date > stop_date:
+        start_date, stop_date = stop_date, start_date
+
+    # Calculate the number of weekend days
+    weekends = day_count(start_date, stop_date)
+
+    # Print the result
+    print(f"The period between {start_date} and {stop_date} includes {weekends} weekend days.")
+
